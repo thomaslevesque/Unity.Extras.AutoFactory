@@ -9,21 +9,21 @@ namespace Unity.AutoFactory
 {
     static class AutoFactoryTypeGenerator
     {
-        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _autoFactoryTypeCache;
-        private static readonly ModuleBuilder _module;
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> AutoFactoryTypeCache;
+        private static readonly ModuleBuilder Module;
 
         static AutoFactoryTypeGenerator()
         {
-            _autoFactoryTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
+            AutoFactoryTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
             var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 new AssemblyName("AutoFactories"),
-                AssemblyBuilderAccess.RunAndSave);
-            _module = assembly.DefineDynamicModule("AutoFactories", "AutoFactories.dll");
+                AssemblyBuilderAccess.Run);
+            Module = assembly.DefineDynamicModule("AutoFactories");
         }
 
         public static Type GetAutoFactoryType(Type factoryType, Type concreteResultType)
         {
-            return _autoFactoryTypeCache.GetOrAdd(
+            return AutoFactoryTypeCache.GetOrAdd(
                 Tuple.Create(factoryType, concreteResultType),
                 t => CreateAutoFactoryType(t.Item1, t.Item2));
         }
@@ -42,7 +42,7 @@ namespace Unity.AutoFactory
                 throw new InvalidOperationException($"Method '{badMethod}' has the wrong return type");
 
             string typeName = $"{factoryType.FullName.Replace('.', '_')}_{concreteResultType.FullName.Replace('.', '_')}_AutoFactory";
-            var autoFactoryType = _module.DefineType(typeName);
+            var autoFactoryType = Module.DefineType(typeName);
             autoFactoryType.AddInterfaceImplementation(factoryType);
             var containerField = autoFactoryType.DefineField("_container", typeof(IUnityContainer), FieldAttributes.Private | FieldAttributes.InitOnly);
             CreateConstructor(autoFactoryType, containerField);
@@ -52,7 +52,6 @@ namespace Unity.AutoFactory
             }
 
             var builtType = autoFactoryType.CreateType();
-            ((AssemblyBuilder)_module.Assembly).Save(@"AutoFactories.dll");
             return builtType;
         }
 
@@ -65,7 +64,6 @@ namespace Unity.AutoFactory
                 (interfaceMethod.Attributes | MethodAttributes.Final) & ~MethodAttributes.Abstract,
                 interfaceMethod.ReturnType,
                 paramTypes);
-
 
             foreach (var param in parameters)
             {
