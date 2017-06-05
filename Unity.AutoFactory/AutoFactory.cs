@@ -4,14 +4,15 @@ using Microsoft.Practices.Unity;
 
 namespace Unity.AutoFactory
 {
-    public class InjectionAutoFactory<TConcreteResult> : InjectionMember
+    public class AutoFactory<TConcreteResult> : InjectionMember
     {
         public override void AddPolicies(Type serviceType, Type implementationType, string name, IPolicyList policies)
         {
+            var type = serviceType ?? implementationType;
             policies.Set(
                 typeof (IAutoFactoryPolicy),
-                new AutoFactoryPolicy(implementationType, typeof (TConcreteResult)),
-                new NamedTypeBuildKey(implementationType, name));
+                new AutoFactoryPolicy(type, typeof (TConcreteResult)),
+                new NamedTypeBuildKey(type, name));
         }
     }
 }

@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InjectionAutoFactory.cs" />
+    <Compile Include="AutoFactory.cs" />
     <Compile Include="AutoFactoryExtension.cs" />
     <Compile Include="AutoFactoryPolicy.cs" />
     <Compile Include="AutoFactoryStrategy.cs" />
