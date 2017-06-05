@@ -74,7 +74,7 @@ namespace Unity.AutoFactory
 
             var ctor = GetBestMatchConstructor(concreteResultType, interfaceMethod);
             if (ctor == null)
-                throw new InvalidOperationException($"Type '{concreteResultType}' doesn't have a parameter compatible with method '{method}'");
+                throw new InvalidOperationException($"Type '{concreteResultType}' doesn't have a constructor compatible with method '{interfaceMethod}'");
 
             var il = method.GetILGenerator();
 
