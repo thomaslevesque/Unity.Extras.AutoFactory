@@ -15,7 +15,7 @@ namespace Unity.AutoFactory
         static AutoFactoryTypeGenerator()
         {
             AutoFactoryTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
-            var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName("AutoFactories"),
                 AssemblyBuilderAccess.Run);
             Module = assembly.DefineDynamicModule("AutoFactories");
@@ -30,14 +30,17 @@ namespace Unity.AutoFactory
 
         private static Type CreateAutoFactoryType(Type factoryType, Type concreteResultType)
         {
-            if (!factoryType.IsInterface)
+            var factoryTypeInfo = factoryType.GetTypeInfo();
+            var concreteResultTypeInfo = concreteResultType.GetTypeInfo();
+
+            if (!factoryTypeInfo.IsInterface)
                 throw new InvalidOperationException("Factory type must be an interface");
-            if (concreteResultType.IsInterface || concreteResultType.IsAbstract || concreteResultType.IsEnum || concreteResultType.IsSubclassOf(typeof(Delegate)))
+            if (concreteResultTypeInfo.IsInterface || concreteResultTypeInfo.IsAbstract || concreteResultTypeInfo.IsEnum || concreteResultTypeInfo.IsSubclassOf(typeof(Delegate)))
                 throw new InvalidOperationException("Concrete result type must be a concrete class or struct");
 
-            var methods = factoryType.GetMethods();
+            var methods = factoryTypeInfo.GetMethods();
 
-            var badMethod = methods.FirstOrDefault(m => !m.ReturnType.IsAssignableFrom(concreteResultType));
+            var badMethod = methods.FirstOrDefault(m => !m.ReturnType.GetTypeInfo().IsAssignableFrom(concreteResultType));
             if (badMethod != null)
                 throw new InvalidOperationException($"Method '{badMethod}' has the wrong return type");
 
@@ -51,14 +54,14 @@ namespace Unity.AutoFactory
                 CreateMethod(autoFactoryType, containerField, method, concreteResultType);
             }
 
-            var builtType = autoFactoryType.CreateType();
+            var builtType = autoFactoryType.CreateTypeInfo().AsType();
             return builtType;
         }
 
         private static void CreateMethod(TypeBuilder type, FieldBuilder containerField, MethodInfo interfaceMethod, Type concreteResultType)
         {
             var parameters = interfaceMethod.GetParameters();
-            var paramTypes = Array.ConvertAll(parameters, p => p.ParameterType);
+            var paramTypes = parameters.Select(p => p.ParameterType).ToArray();
             var method = type.DefineMethod(
                 interfaceMethod.Name,
                 (interfaceMethod.Attributes | MethodAttributes.Final) & ~MethodAttributes.Abstract,
@@ -81,11 +84,11 @@ namespace Unity.AutoFactory
 
             // overrides = new ParameterOverrides
             // ReSharper disable once AssignNullToNotNullAttribute
-            il.Emit(OpCodes.Newobj, typeof(ParameterOverrides).GetConstructor(Type.EmptyTypes));
+            il.Emit(OpCodes.Newobj, typeof(ParameterOverrides).GetTypeInfo().GetConstructor(Type.EmptyTypes));
             il.Emit(OpCodes.Stloc_0);
 
 
-            var addMethod = typeof(ParameterOverrides).GetMethod("Add");
+            var addMethod = typeof(ParameterOverrides).GetTypeInfo().GetMethod("Add");
             var methodParams = interfaceMethod.GetParameters().ToDictionary(p => p.Name);
             foreach (var param in ctor.GetParameters())
             {
@@ -97,7 +100,7 @@ namespace Unity.AutoFactory
                 il.Emit(OpCodes.Ldloc_0);
                 il.Emit(OpCodes.Ldstr, param.Name);
                 il.Emit(OpCodes.Ldarg_S, createParam.Position + 1);
-                if (createParam.ParameterType.IsValueType)
+                if (createParam.ParameterType.GetTypeInfo().IsValueType)
                     il.Emit(OpCodes.Box, createParam.ParameterType);
                 il.Emit(OpCodes.Callvirt, addMethod);
             }
@@ -107,7 +110,7 @@ namespace Unity.AutoFactory
 
             // typeof(TConcreteResult)
             il.Emit(OpCodes.Ldtoken, concreteResultType);
-            il.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
+            il.Emit(OpCodes.Call, typeof(Type).GetTypeInfo().GetMethod("GetTypeFromHandle"));
 
             il.Emit(OpCodes.Ldnull); // null (name)
 
@@ -120,7 +123,7 @@ namespace Unity.AutoFactory
             il.Emit(OpCodes.Stelem_Ref);
 
             // container.Resolve(typeof(TConcreteResult), null, overrides);
-            il.EmitCall(OpCodes.Callvirt, typeof(IUnityContainer).GetMethod("Resolve"), new[] { typeof(ParameterOverrides) });
+            il.EmitCall(OpCodes.Callvirt, typeof(IUnityContainer).GetTypeInfo().GetMethod("Resolve"), new[] { typeof(ParameterOverrides) });
 
             il.Emit(OpCodes.Ret);
         }
@@ -128,7 +131,7 @@ namespace Unity.AutoFactory
         private static ConstructorInfo GetBestMatchConstructor(Type typeToConstruct, MethodInfo createMethod)
         {
             var createParams = createMethod.GetParameters();
-            var ctors = typeToConstruct.GetConstructors();
+            var ctors = typeToConstruct.GetTypeInfo().GetConstructors();
             var eligibleCtors = ctors.Where(c => IsEligibleConstructor(c, createParams));
             return eligibleCtors.OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
         }
@@ -147,7 +150,7 @@ namespace Unity.AutoFactory
 
             foreach (var x in joinedByName)
             {
-                if (!x.ctorParam.ParameterType.IsAssignableFrom(x.createParam.ParameterType))
+                if (!x.ctorParam.ParameterType.GetTypeInfo().IsAssignableFrom(x.createParam.ParameterType))
                     return false;
             }
 
@@ -164,7 +167,7 @@ namespace Unity.AutoFactory
             var il = ctor.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             // ReSharper disable once AssignNullToNotNullAttribute (I know this ctor exists...)
-            il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
+            il.Emit(OpCodes.Call, typeof(object).GetTypeInfo().GetConstructor(Type.EmptyTypes));
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Stfld, field);
