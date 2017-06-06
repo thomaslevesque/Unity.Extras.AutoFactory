@@ -1,17 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
-        <VersionPrefix>1.0.0</VersionPrefix>
-        <PackageTargetFallBack>portable-net45+win8+wp8+wpa81</PackageTargetFallBack>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha001</VersionSuffix>
+    <Description>Automatically generates strongly-typed factories based on a factory interface and a concrete type to create</Description>
+    <Authors>Thomas Levesque</Authors>
+    <Company>Thomas Levesque</Company>
+    <PackageProjectUrl>https://github.com/thomaslevesque/Unity.AutoFactory/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thomaslevesque/Unity.AutoFactory/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>unity;factory;autofactory;ioc</PackageTags>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Unity" Version="4.0.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Unity" Version="4.0.1" />
+  </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
-        <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
-    </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
+    <PackageTargetFallBack>portable-net45+win8+wp8+wpa81</PackageTargetFallBack>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+  </ItemGroup>
 
 </Project>

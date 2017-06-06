@@ -12,3 +12,6 @@ pull_requests:
 
 nuget:
   disable_publish_on_pr: true
+
+artifacts:
+- path: .\src\Unity.AutoFactory\bin\Release\Unity.AutoFactory.*.nupkg
