@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.Practices.Unity;
 using Xunit;
 
-namespace Unity.AutoFactory.Tests
+namespace Unity.Extras.AutoFactory.Tests
 {
     public class AutoFactoryExtensionTests
     {

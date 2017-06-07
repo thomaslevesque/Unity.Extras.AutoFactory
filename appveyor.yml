@@ -14,4 +14,4 @@ nuget:
   disable_publish_on_pr: true
 
 artifacts:
-- path: .\src\Unity.AutoFactory\bin\Release\Unity.AutoFactory.*.nupkg
+- path: .\src\Unity.Extras.AutoFactory\bin\Release\Unity.Extras.AutoFactory.*.nupkg

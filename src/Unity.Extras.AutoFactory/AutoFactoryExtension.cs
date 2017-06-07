@@ -1,7 +1,7 @@
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.ObjectBuilder;
 
-namespace Unity.AutoFactory
+namespace Unity.Extras.AutoFactory
 {
     public class AutoFactoryExtension : UnityContainerExtension
     {

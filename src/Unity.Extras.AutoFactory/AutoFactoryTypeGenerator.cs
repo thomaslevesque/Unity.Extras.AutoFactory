@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.Practices.Unity;
 
-namespace Unity.AutoFactory
+namespace Unity.Extras.AutoFactory
 {
     static class AutoFactoryTypeGenerator
     {

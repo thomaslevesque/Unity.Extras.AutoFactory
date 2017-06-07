@@ -1,4 +1,4 @@
-# Unity.AutoFactory
+# Unity.Extras.AutoFactory
 
 A Unity extension to automatically generate strongly typed factories at runtime.
 
@@ -32,7 +32,7 @@ public class Foo : IFoo
 }
 ```
 
-Unity.AutoFactory can automatically generate an implementation of `IFooFactory` that will create instances of `Foo` with the specified parameters and inject the required dependencies:
+Unity.Extras.AutoFactory can automatically generate an implementation of `IFooFactory` that will create instances of `Foo` with the specified parameters and inject the required dependencies:
 
 ```csharp
 var container = new UnityContainer();

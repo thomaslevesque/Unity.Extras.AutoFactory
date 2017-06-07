@@ -3,8 +3,8 @@ using System.Xml.Linq;
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-const string libraryProject = "./src/Unity.AutoFactory/Unity.AutoFactory.csproj";
-const string testProject = "./tests/Unity.AutoFactory.Tests/Unity.AutoFactory.Tests.csproj";
+const string libraryProject = "./src/Unity.Extras.AutoFactory/Unity.Extras.AutoFactory.csproj";
+const string testProject = "./tests/Unity.Extras.AutoFactory.Tests/Unity.Extras.AutoFactory.Tests.csproj";
 
 string versionSuffix = GetVersionSuffix();
 
@@ -75,10 +75,10 @@ Task("Clean")
 {
     CleanDirectories(new[]
     {
-        $"./src/Unity.AutoFactory/bin/{configuration}",
-        $"./src/Unity.AutoFactory/obj/{configuration}",
-        $"./tests/Unity.AutoFactory.Tests/bin/{configuration}",
-        $"./tests/Unity.AutoFactory.Tests/obj/{configuration}"
+        $"./src/Unity.Extras.AutoFactory/bin/{configuration}",
+        $"./src/Unity.Extras.AutoFactory/obj/{configuration}",
+        $"./tests/Unity.Extras.AutoFactory.Tests/bin/{configuration}",
+        $"./tests/Unity.Extras.AutoFactory.Tests/obj/{configuration}"
     });
 });
 

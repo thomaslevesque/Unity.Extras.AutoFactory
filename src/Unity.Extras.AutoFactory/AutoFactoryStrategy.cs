@@ -1,6 +1,6 @@
 using Microsoft.Practices.ObjectBuilder2;
 
-namespace Unity.AutoFactory
+namespace Unity.Extras.AutoFactory
 {
     class AutoFactoryStrategy : BuildPlanStrategy
     {

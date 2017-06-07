@@ -7,8 +7,8 @@
     <Description>Automatically generates strongly-typed factories based on a factory interface and a concrete type to create</Description>
     <Authors>Thomas Levesque</Authors>
     <Company>Thomas Levesque</Company>
-    <PackageProjectUrl>https://github.com/thomaslevesque/Unity.AutoFactory/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/thomaslevesque/Unity.AutoFactory/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/thomaslevesque/Unity.Extras.AutoFactory/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thomaslevesque/Unity.Extras.AutoFactory/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>unity;factory;autofactory;ioc</PackageTags>
   </PropertyGroup>

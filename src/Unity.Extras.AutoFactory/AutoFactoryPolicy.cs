@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.AutoFactory
+namespace Unity.Extras.AutoFactory
 {
     class AutoFactoryPolicy : IAutoFactoryPolicy
     {

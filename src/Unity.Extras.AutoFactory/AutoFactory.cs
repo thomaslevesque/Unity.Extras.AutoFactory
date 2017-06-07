@@ -2,7 +2,7 @@
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 
-namespace Unity.AutoFactory
+namespace Unity.Extras.AutoFactory
 {
     public class AutoFactory<TConcreteResult> : InjectionMember
     {
